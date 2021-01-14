@@ -1,0 +1,77 @@
+---
+title: "Shinyapp_ReadingList"
+author: "Susan Yuan"
+date: "1/14/2021"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Texas Bluebonnet Award 1981-2020
+
+This Shiny Application is to provide users the information about Texas Bluebonnet Book Award winners from 1981 to 2020
+
+
+
+### What is Texas Bluebonnet Award?
+
+- Thousands of children voted every year
+- Students in grades three through six voted
+- Children had to read at least five of the books on the Texas Bluebonnet Award List and vote
+
+## How to use this Shiny app?
+
+
+- Select the year of interest from 1981 to 2020
+
+- The title of the winner book will be presented.
+
+## ui.R code
+
+```{r echo = TRUE}
+library(shiny)
+shinyUI(fluidPage(
+
+    # Application title
+    titlePanel("The book Won Texas Bluebonnet Award 1981-2020"),
+
+    # Input year
+   
+       numericInput(inputId="year","Year:1981-2020", value=2020, 
+                 min=1981, max=2020, step=1),
+
+        # Show the winnder of the year
+        mainPanel(
+            h3("The Title of the Book:"),
+            textOutput(outputId="title")
+        )
+        
+
+    
+))
+
+```
+
+## server.R code
+
+```{r, echo=TRUE}
+library(shiny)
+library(dplyr)
+
+# Define server logic required to draw a histogram
+shinyServer(function(input, output) {
+    
+    output$title <- renderText({
+        
+        master_list<-read.csv("reading_list.csv")
+
+        winner<-master_list%>%filter(Year==input$year)
+        as.character(winner$Title)
+
+    })
+
+})
+```
+
